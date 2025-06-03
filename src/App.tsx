@@ -135,11 +135,26 @@ function App() {
         </form>
       )}
       
-      <ul>
-        {aiApps.map((listing) => (
-          <li key={listing.id}>{listing.name}</li>
+      <div className="app-list">
+        {aiApps.map((app) => (
+          <div key={app.id} className="app-item">
+            <h3>{app.name}</h3>
+            {app.description && <p>{app.description}</p>}
+            <div className="app-details">
+              <p><strong>URL:</strong> <a href={app.url} target="_blank" rel="noopener noreferrer">{app.url}</a></p>
+              {app.license && <p><strong>License:</strong> {app.license}</p>}
+              {app.type && <p><strong>Type:</strong> {app.type}</p>}
+              {app.useCase && <p><strong>Use Case:</strong> {app.useCase}</p>}
+              {app.region && <p><strong>Region:</strong> {app.region}</p>}
+              {app.imageKey && (
+                <div className="app-image">
+                  <img src={app.imageKey} alt={app.name} />
+                </div>
+              )}
+            </div>
+          </div>
         ))}
-      </ul>
+      </div>
     </main>
   );
 }

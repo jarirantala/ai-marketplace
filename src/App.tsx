@@ -14,7 +14,13 @@ function App() {
   }, []);
 
   function createAIApp() {
-    client.models.AIApp.create({ name: window.prompt("App content") });
+    const appName = window.prompt("App content");
+    if (appName) {
+      client.models.AIApp.create({ 
+        name: appName,
+        url: "https://example.com" // Default URL since it's required
+      });
+    }
   }
 
   return (

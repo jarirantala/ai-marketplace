@@ -9,7 +9,13 @@ function App() {
   const [aiApps, setAiApps] = useState<Array<Schema["AIApp"]["type"]>>([]);
 
   useEffect(() => {
-    client.models.AIApp.observeQuery().subscribe({
+    client.models.AIApp.observeQuery({
+      filter: {
+        active: {
+          eq: true
+        }
+      }
+    }).subscribe({
       next: (data) => setAiApps([...data.items]),
     });
   }, []);
@@ -41,7 +47,8 @@ function App() {
       type: formData.type || undefined,
       useCase: formData.useCase || undefined,
       region: formData.region || undefined,
-      imageKey: formData.imageKey || undefined
+      imageKey: formData.imageKey || undefined,
+      active: false // Explicitly set to false for new items
     });
     setFormData({
       name: "",

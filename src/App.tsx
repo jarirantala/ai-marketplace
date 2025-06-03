@@ -20,7 +20,7 @@ function App() {
   return (
     <main>
       <h1>AI Marketplace Finland</h1>
-      <button onClick={createAiApp}>+ new</button>
+      <button onClick={createAIApp}>+ new</button>
       <ul>
         {aiApps.map((listing) => (
           <li key={listing.id}>{listing.name}</li>

@@ -5,29 +5,29 @@ import { generateClient } from "aws-amplify/data";
 const client = generateClient<Schema>();
 
 function App() {
-  const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
+  const [aiApps, setAiApps] = useState<Array<Schema["AIApp"]["type"]>>([]);
 
   useEffect(() => {
-    client.models.Todo.observeQuery().subscribe({
-      next: (data) => setTodos([...data.items]),
+    client.models.AIApp.observeQuery().subscribe({
+      next: (data) => setAiApps([...data.items]),
     });
   }, []);
 
-  function createTodo() {
-    client.models.Todo.create({ content: window.prompt("Todo content") });
+  function createAIApp() {
+    client.models.AIApp.create({ content: window.prompt("App content") });
   }
 
   return (
     <main>
       <h1>AI Marketplace Finland</h1>
-      <button onClick={createTodo}>+ new</button>
+      <button onClick={createAiApp}>+ new</button>
       <ul>
-        {todos.map((todo) => (
-          <li key={todo.id}>{todo.content}</li>
+        {aiApps.map((listing) => (
+          <li key={listing.id}>{listing.name}</li>
         ))}
       </ul>
       <div>
-        🥳 App successfully hosted. Try creating a new todo.
+        🥳 App successfully hosted. Try creating a new listing.
         <br />
         <a href="https://docs.amplify.aws/react/start/quickstart/#make-frontend-updates">
           Review next step of this tutorial.

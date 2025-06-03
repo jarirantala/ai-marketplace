@@ -26,7 +26,7 @@ function App() {
     imageKey: ""
   });
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   }
@@ -101,11 +101,15 @@ function App() {
           </div>
           <div>
             <label>Type: </label>
-            <input 
-              name="type" 
-              value={formData.type} 
-              onChange={handleChange} 
-            />
+            <select
+              name="type"
+              value={formData.type}
+              onChange={handleChange}
+            >
+              <option value="">Select type</option>
+              <option value="Business">Business</option>
+              <option value="Consumer">Consumer</option>
+            </select>
           </div>
           <div>
             <label>Use Case: </label>
@@ -117,11 +121,15 @@ function App() {
           </div>
           <div>
             <label>Region: </label>
-            <input 
-              name="region" 
-              value={formData.region} 
-              onChange={handleChange} 
-            />
+            <select
+              name="region"
+              value={formData.region}
+              onChange={handleChange}
+            >
+              <option value="">Select region</option>
+              <option value="Finland">Finland</option>
+              <option value="Europe">Europe</option>
+            </select>
           </div>
           <div>
             <label>Image URL: </label>

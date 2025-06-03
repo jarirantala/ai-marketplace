@@ -14,7 +14,7 @@ function App() {
   }, []);
 
   function createAIApp() {
-    client.models.AIApp.create({ content: window.prompt("App content") });
+    client.models.AIApp.create({ name: window.prompt("App content") });
   }
 
   return (

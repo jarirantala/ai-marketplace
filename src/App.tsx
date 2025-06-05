@@ -168,7 +168,7 @@ function App() {
             </select>
           </div>
           <div>
-            <label>Image URL: </label>
+            <label>Logo URL: </label>
             <input 
               name="imageKey" 
               value={formData.imageKey} 
@@ -183,16 +183,14 @@ function App() {
         {aiApps.filter(app => app !== null && app !== undefined).map((app) => (
           <div key={app.id} className="app-item">
             <img 
-              src="https://aimarketplace.s3.amazonaws.com/aimarketplace-logo.png" 
-              alt="AI Marketplace Logo" 
+              src={app.imageKey && app.imageKey.trim() !== '' 
+                ? app.imageKey 
+                : "https://aimarketplace.s3.amazonaws.com/aimarketplace-logo.png"}
+              alt={app.imageKey && app.imageKey.trim() !== '' ? `${app.name} Logo` : "AI Marketplace Logo"} 
               className="app-logo" 
             />
             <h3>{app?.name || ''}</h3>
-            {app?.imageKey && (
-              <div className="app-image">
-                <img src={app.imageKey} alt={app.name || ''} />
-              </div>
-            )}
+
             <p>{app?.description || ''}</p>
             <div className="app-details">
               <p><strong>URL:</strong> <a href={app?.url || '#'} target="_blank" rel="noopener noreferrer">{app?.url || ''}</a></p>

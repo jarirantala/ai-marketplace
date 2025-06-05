@@ -1,12 +1,33 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import type { Schema } from "../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
 import "./App.css";
+import { Auth } from "aws-amplify";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const client = generateClient<Schema>();
 
 function App() {
   const [aiApps, setAiApps] = useState<Array<Schema["AIApp"]["type"]>>([]);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
+  
+  // Load rate limit data from localStorage on component mount
+  useEffect(() => {
+    try {
+      const storedRateLimit = localStorage.getItem('aiMarketplaceRateLimit');
+      if (storedRateLimit) {
+        const parsedData = JSON.parse(storedRateLimit);
+        if (Array.isArray(parsedData)) {
+          // Filter out expired timestamps
+          const now = Date.now();
+          RATE_LIMIT.submissions = parsedData.filter(time => now - time < RATE_LIMIT.timeWindow);
+        }
+      }
+    } catch (e) {
+      // Ignore localStorage errors
+    }
+  }, []);
 
   useEffect(() => {
     client.models.AIApp.observeQuery({
@@ -29,7 +50,9 @@ function App() {
             type: item.type || '',
             useCase: item.useCase || '',
             region: item.region || '',
-            imageKey: item.imageKey || ''
+            imageKey: item.imageKey || '',
+            addedBy: item.addedBy || '',
+            addedByEmail: item.addedByEmail || ''
           }));
         setAiApps(normalizedItems);
       },
@@ -45,7 +68,9 @@ function App() {
     type: "",
     useCase: "",
     region: "",
-    imageKey: ""
+    imageKey: "",
+    addedBy: "",
+    addedByEmail: ""
   });
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
@@ -55,24 +80,92 @@ function App() {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    
+    // Verify CAPTCHA
+    if (!captchaToken) {
+      alert("Please complete the CAPTCHA verification");
+      return;
+    }
+    
+    // Apply rate limiting
+    const now = Date.now();
+    // Remove submissions older than the time window
+    RATE_LIMIT.submissions = RATE_LIMIT.submissions.filter(time => now - time < RATE_LIMIT.timeWindow);
+    
+    // Check if user has exceeded the rate limit
+    if (RATE_LIMIT.submissions.length >= RATE_LIMIT.maxSubmissions) {
+      alert(`Rate limit exceeded. Please try again later. Maximum ${RATE_LIMIT.maxSubmissions} submissions per hour.`);
+      return;
+    }
+    
     // Validate required fields client-side
     if (!formData.name || !formData.url || !formData.license || 
-        !formData.description || !formData.type || !formData.useCase || !formData.region) {
+        !formData.description || !formData.type || !formData.useCase || !formData.region ||
+        !formData.addedBy || !formData.addedByEmail) {
       alert("Please fill in all required fields");
       return;
     }
     
-    client.models.AIApp.create({
-      name: formData.name,
-      url: formData.url,
-      license: formData.license,
-      description: formData.description,
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.addedByEmail)) {
+      alert("Please enter a valid email address");
+      return;
+    }
+    
+    // Basic input sanitization
+    const sanitizedData = {
+      name: formData.name.trim().slice(0, 100),
+      url: validateUrl(formData.url.trim()) ? formData.url.trim() : '',
+      license: formData.license.trim().slice(0, 100),
+      description: formData.description.trim().slice(0, 1000),
       type: formData.type,
-      useCase: formData.useCase,
+      useCase: formData.useCase.trim().slice(0, 200),
       region: formData.region,
-      imageKey: formData.imageKey || undefined,
-      active: false // Explicitly set to false for new items
-    });
+      imageKey: formData.imageKey ? validateUrl(formData.imageKey.trim()) ? formData.imageKey.trim() : '' : undefined,
+      addedBy: formData.addedBy.trim().slice(0, 100),
+      addedByEmail: formData.addedByEmail.trim().slice(0, 100),
+      active: false // Explicitly set to false for new items - requires admin approval
+    };
+    
+    // Validate URL format
+    if (!sanitizedData.url) {
+      alert("Please enter a valid URL");
+      return;
+    }
+    
+    // Honeypot check (would need to add a hidden honeypot field to the form)
+    // if (honeypotField.value) return; // Bot detected
+    
+    // Add submission timestamp for audit
+    const submission = {
+      ...sanitizedData,
+      submittedAt: new Date().toISOString()
+    };
+    
+    // Record this submission for rate limiting
+    RATE_LIMIT.submissions.push(now);
+    
+    // Store rate limit info in localStorage to persist between page refreshes
+    try {
+      localStorage.setItem('aiMarketplaceRateLimit', JSON.stringify(RATE_LIMIT.submissions));
+    } catch (e) {
+      // Ignore localStorage errors
+    }
+    
+    // Include captcha token with submission
+    const submissionWithCaptcha = {
+      ...submission,
+      captchaToken // This could be verified server-side
+    };
+    
+    client.models.AIApp.create(submissionWithCaptcha);
+    
+    // Reset captcha after submission
+    setCaptchaToken(null);
+    if (recaptchaRef.current) {
+      recaptchaRef.current.reset();
+    }
     setFormData({
       name: "",
       url: "",
@@ -81,7 +174,9 @@ function App() {
       type: "",
       useCase: "",
       region: "",
-      imageKey: ""
+      imageKey: "",
+      addedBy: "",
+      addedByEmail: ""
     });
     setShowForm(false);
   }
@@ -151,6 +246,7 @@ function App() {
               value={formData.useCase} 
               onChange={handleChange}
               required
+              title="Collaboration tool, chatbot etc"
             />
           </div>
           <div>
@@ -172,6 +268,32 @@ function App() {
               name="imageKey" 
               value={formData.imageKey} 
               onChange={handleChange} 
+            />
+          </div>
+          <div>
+            <label>Your name*: </label>
+            <input 
+              name="addedBy" 
+              value={formData.addedBy} 
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div>
+            <label>Your email*: </label>
+            <input 
+              name="addedByEmail" 
+              type="email"
+              value={formData.addedByEmail} 
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div style={{ margin: "20px 0" }}>
+            <ReCAPTCHA
+              ref={recaptchaRef}
+              sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" // Replace with your actual site key
+              onChange={(token) => setCaptchaToken(token)}
             />
           </div>
           <button type="submit">Submit</button>
@@ -206,3 +328,18 @@ function App() {
 }
 
 export default App;
+// Function to validate URL format
+function validateUrl(url: string): boolean {
+  try {
+    const parsedUrl = new URL(url);
+    return parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:';
+  } catch (e) {
+    return false;
+  }
+}
+// Simple rate limiting implementation
+const RATE_LIMIT = {
+  maxSubmissions: 10,
+  timeWindow: 60 * 60 * 1000, // 1 hour in milliseconds
+  submissions: [] as number[]
+};

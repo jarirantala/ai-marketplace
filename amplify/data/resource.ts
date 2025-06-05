@@ -17,7 +17,12 @@ const schema = a.schema({
       useCase: a.string(),
       region: a.string(),
       imageKey: a.string(),
+      addedBy: a.string(),
+      addedByEmail: a.string(),
       active: a.boolean().default(false),
+      submittedAt: a.string(),
+      approvedAt: a.string(),
+      approvedBy: a.string(),
     })
     .authorization((allow) => [allow.publicApiKey()]),
 });

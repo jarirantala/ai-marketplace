@@ -42,11 +42,11 @@ function App() {
     client.models.AIApp.create({
       name: formData.name,
       url: formData.url,
-      license: formData.license || undefined,
-      description: formData.description || undefined,
-      type: formData.type || undefined,
-      useCase: formData.useCase || undefined,
-      region: formData.region || undefined,
+      license: formData.license,
+      description: formData.description,
+      type: formData.type,
+      useCase: formData.useCase,
+      region: formData.region,
       imageKey: formData.imageKey || undefined,
       active: false // Explicitly set to false for new items
     });
@@ -91,27 +91,30 @@ function App() {
             />
           </div>
           <div>
-            <label>License: </label>
+            <label>License*: </label>
             <input 
               name="license" 
               value={formData.license} 
-              onChange={handleChange} 
+              onChange={handleChange}
+              required
             />
           </div>
           <div>
-            <label>Description: </label>
+            <label>Description*: </label>
             <textarea 
               name="description" 
               value={formData.description} 
-              onChange={handleChange} 
+              onChange={handleChange}
+              required
             />
           </div>
           <div>
-            <label>Type: </label>
+            <label>Type*: </label>
             <select
               name="type"
               value={formData.type}
               onChange={handleChange}
+              required
             >
               <option value="">Select type</option>
               <option value="Business">Business</option>
@@ -119,19 +122,21 @@ function App() {
             </select>
           </div>
           <div>
-            <label>Use Case: </label>
+            <label>Use Case*: </label>
             <input 
               name="useCase" 
               value={formData.useCase} 
-              onChange={handleChange} 
+              onChange={handleChange}
+              required
             />
           </div>
           <div>
-            <label>Region: </label>
+            <label>Region*: </label>
             <select
               name="region"
               value={formData.region}
               onChange={handleChange}
+              required
             >
               <option value="">Select region</option>
               <option value="Finland">Finland</option>

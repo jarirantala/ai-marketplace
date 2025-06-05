@@ -11,11 +11,11 @@ const schema = a.schema({
     .model({
       name: a.string().required(),
       url: a.string().required(),
-      license: a.string(),
-      description: a.string(),
-      type: a.string(),
-      useCase: a.string(),
-      region: a.string(),
+      license: a.string().required(),
+      description: a.string().required(),
+      type: a.string().required(),
+      useCase: a.string().required(),
+      region: a.string().required(),
       imageKey: a.string(),
       active: a.boolean().default(false),
     })

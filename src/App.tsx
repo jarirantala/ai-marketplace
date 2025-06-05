@@ -182,10 +182,12 @@ function App() {
 
   return (
     <main>
-      <h1>AI Marketplace Finland</h1>
-      <button onClick={() => setShowForm(!showForm)}>
-        {showForm ? "Cancel" : "+ new"}
-      </button>
+      <div className="header">
+        <h1>AI Marketplace Finland</h1>
+        <button onClick={() => setShowForm(!showForm)}>
+          {showForm ? "Cancel" : "+ new"}
+        </button>
+      </div>
       
       {showForm && (
         <form onSubmit={handleSubmit} style={{ margin: "20px 0" }}>

@@ -156,26 +156,26 @@ function App() {
       )}
       
       <div className="app-list">
-        {aiApps.map((app) => (
+        {aiApps.filter(app => app !== null && app !== undefined).map((app) => (
           <div key={app.id} className="app-item">
             <img 
               src="https://aimarketplace.s3.amazonaws.com/aimarketplace-logo.png" 
               alt="AI Marketplace Logo" 
               className="app-logo" 
             />
-            <h3>{app.name}</h3>
-            {app.imageKey && (
+            <h3>{app?.name || 'Unnamed App'}</h3>
+            {app?.imageKey && (
               <div className="app-image">
-                <img src={app.imageKey} alt={app.name} />
+                <img src={app.imageKey} alt={app.name || 'App Image'} />
               </div>
             )}
-            {app.description && <p>{app.description}</p>}
+            {app?.description && <p>{app.description}</p>}
             <div className="app-details">
-              <p><strong>URL:</strong> <a href={app.url} target="_blank" rel="noopener noreferrer">{app.url}</a></p>
-              {app.license && <p><strong>License:</strong> {app.license}</p>}
-              {app.type && <p><strong>Type:</strong> {app.type}</p>}
-              {app.useCase && <p><strong>Use Case:</strong> {app.useCase}</p>}
-              {app.region && <p><strong>Region:</strong> {app.region}</p>}
+              <p><strong>URL:</strong> <a href={app?.url || '#'} target="_blank" rel="noopener noreferrer">{app?.url || 'No URL'}</a></p>
+              {app?.license && <p><strong>License:</strong> {app.license}</p>}
+              {app?.type && <p><strong>Type:</strong> {app.type}</p>}
+              {app?.useCase && <p><strong>Use Case:</strong> {app.useCase}</p>}
+              {app?.region && <p><strong>Region:</strong> {app.region}</p>}
             </div>
           </div>
         ))}

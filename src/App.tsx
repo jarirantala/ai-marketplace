@@ -18,9 +18,9 @@ function App() {
     }).subscribe({
       next: (data) => {
         // Normalize data to ensure no null/undefined values
-        const normalizedItems = data.items.map(item => {
-          if (!item) return null;
-          return {
+        const normalizedItems = data.items
+          .filter((item): item is Schema["AIApp"]["type"] => item !== null && item !== undefined)
+          .map(item => ({
             ...item,
             name: item.name || '',
             url: item.url || '',
@@ -30,9 +30,8 @@ function App() {
             useCase: item.useCase || '',
             region: item.region || '',
             imageKey: item.imageKey || ''
-          };
-        });
-        setAiApps(normalizedItems.filter(Boolean));
+          }));
+        setAiApps(normalizedItems);
       },
     });
   }, []);
@@ -180,7 +179,7 @@ function App() {
       )}
       
       <div className="app-list">
-        {aiApps.filter(app => app !== null && app !== undefined).map((app) => (
+        {aiApps.map((app) => (
           <div key={app.id} className="app-item">
             <img 
               src={app.imageKey && app.imageKey.trim() !== '' 

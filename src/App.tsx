@@ -154,6 +154,11 @@ function App() {
         {aiApps.map((app) => (
           <div key={app.id} className="app-item">
             <h3>{app.name}</h3>
+            {app.imageKey && (
+              <div className="app-image">
+                <img src={app.imageKey} alt={app.name} />
+              </div>
+            )}
             {app.description && <p>{app.description}</p>}
             <div className="app-details">
               <p><strong>URL:</strong> <a href={app.url} target="_blank" rel="noopener noreferrer">{app.url}</a></p>
@@ -161,11 +166,6 @@ function App() {
               {app.type && <p><strong>Type:</strong> {app.type}</p>}
               {app.useCase && <p><strong>Use Case:</strong> {app.useCase}</p>}
               {app.region && <p><strong>Region:</strong> {app.region}</p>}
-              {app.imageKey && (
-                <div className="app-image">
-                  <img src={app.imageKey} alt={app.name} />
-                </div>
-              )}
             </div>
           </div>
         ))}

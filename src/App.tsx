@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import type { Schema } from "../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
-import "./App.css";
+import "./styles.css";
 import ReCAPTCHA from "react-google-recaptcha";
 
 const client = generateClient<Schema>();

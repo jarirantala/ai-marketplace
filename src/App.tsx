@@ -158,6 +158,11 @@ function App() {
       <div className="app-list">
         {aiApps.map((app) => (
           <div key={app.id} className="app-item">
+            <img 
+              src="https://aimarketplace.s3.amazonaws.com/aimarketplace-logo.png" 
+              alt="AI Marketplace Logo" 
+              className="app-logo" 
+            />
             <h3>{app.name}</h3>
             {app.imageKey && (
               <div className="app-image">

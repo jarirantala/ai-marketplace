@@ -184,7 +184,7 @@ function App() {
             <img 
               src={app.imageKey && app.imageKey.trim() !== '' 
                 ? app.imageKey 
-                : "https://aimarketplace.s3.amazonaws.com/aimarketplace-logo.png"}
+                : "https://aimarketplacefi.s3.eu-central-1.amazonaws.com/aimarketplace-logo.png"}
               alt={app.imageKey && app.imageKey.trim() !== '' ? `${app.name} Logo` : "AI Marketplace Logo"} 
               className="app-logo" 
             />

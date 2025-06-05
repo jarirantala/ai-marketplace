@@ -16,7 +16,24 @@ function App() {
         }
       }
     }).subscribe({
-      next: (data) => setAiApps([...data.items]),
+      next: (data) => {
+        // Normalize data to ensure no null/undefined values
+        const normalizedItems = data.items.map(item => {
+          if (!item) return null;
+          return {
+            ...item,
+            name: item.name || '',
+            url: item.url || '',
+            license: item.license || '',
+            description: item.description || '',
+            type: item.type || '',
+            useCase: item.useCase || '',
+            region: item.region || '',
+            imageKey: item.imageKey || ''
+          };
+        });
+        setAiApps(normalizedItems.filter(Boolean));
+      },
     });
   }, []);
 
@@ -39,6 +56,13 @@ function App() {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    // Validate required fields client-side
+    if (!formData.name || !formData.url || !formData.license || 
+        !formData.description || !formData.type || !formData.useCase || !formData.region) {
+      alert("Please fill in all required fields");
+      return;
+    }
+    
     client.models.AIApp.create({
       name: formData.name,
       url: formData.url,
@@ -163,19 +187,19 @@ function App() {
               alt="AI Marketplace Logo" 
               className="app-logo" 
             />
-            <h3>{app?.name || 'Unnamed App'}</h3>
+            <h3>{app?.name || ''}</h3>
             {app?.imageKey && (
               <div className="app-image">
-                <img src={app.imageKey} alt={app.name || 'App Image'} />
+                <img src={app.imageKey} alt={app.name || ''} />
               </div>
             )}
-            {app?.description && <p>{app.description}</p>}
+            <p>{app?.description || ''}</p>
             <div className="app-details">
-              <p><strong>URL:</strong> <a href={app?.url || '#'} target="_blank" rel="noopener noreferrer">{app?.url || 'No URL'}</a></p>
-              {app?.license && <p><strong>License:</strong> {app.license}</p>}
-              {app?.type && <p><strong>Type:</strong> {app.type}</p>}
-              {app?.useCase && <p><strong>Use Case:</strong> {app.useCase}</p>}
-              {app?.region && <p><strong>Region:</strong> {app.region}</p>}
+              <p><strong>URL:</strong> <a href={app?.url || '#'} target="_blank" rel="noopener noreferrer">{app?.url || ''}</a></p>
+              <p><strong>License:</strong> {app?.license || ''}</p>
+              <p><strong>Type:</strong> {app?.type || ''}</p>
+              <p><strong>Use Case:</strong> {app?.useCase || ''}</p>
+              <p><strong>Region:</strong> {app?.region || ''}</p>
             </div>
           </div>
         ))}

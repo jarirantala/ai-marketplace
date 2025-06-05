@@ -2,7 +2,6 @@ import { useEffect, useState, useRef } from "react";
 import type { Schema } from "../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
 import "./App.css";
-import { Auth } from "aws-amplify";
 import ReCAPTCHA from "react-google-recaptcha";
 
 const client = generateClient<Schema>();
@@ -293,7 +292,7 @@ function App() {
             <ReCAPTCHA
               ref={recaptchaRef}
               sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" // Replace with your actual site key
-              onChange={(token) => setCaptchaToken(token)}
+              onChange={(token: string | null) => setCaptchaToken(token)}
             />
           </div>
           <button type="submit">Submit</button>

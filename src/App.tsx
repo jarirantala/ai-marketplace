@@ -19,7 +19,7 @@ function App() {
       next: (data) => {
         // Normalize data to ensure no null/undefined values
         const normalizedItems = data.items
-          .filter((item): item is Schema["AIApp"]["type"] => item !== null && item !== undefined)
+          .filter(item => item !== null && item !== undefined)
           .map(item => ({
             ...item,
             name: item.name || '',

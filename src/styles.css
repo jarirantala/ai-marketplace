@@ -227,7 +227,7 @@ input, textarea, select {
 }
 
 .app-item h3 {
-  margin: 0 0 8px;
+  margin: 0 0 20px;
   color: #2563eb; /* blue-600 */
   font-size: 1.1rem;
   display: flex;

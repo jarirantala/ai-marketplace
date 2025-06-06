@@ -156,16 +156,8 @@ function App() {
     
     client.models.AIApp.create(submissionWithCaptcha);
     
-    // Reset captcha after submission
-   // Reset captcha after submission
+    // Reset captcha token
     setCaptchaToken(null);
-    try {
-      if (recaptchaRef.current) {
-        recaptchaRef.current.reset();
-      }
-    } catch (error) {
-      console.log("Error resetting reCAPTCHA:", error);
-    }
 
     setFormData({
       name: "",
@@ -278,7 +270,6 @@ function App() {
           </div>
           <div style={{ margin: "20px 0" }}>
             <ReCAPTCHA
-              ref={recaptchaRef}
               sitekey="6Le_clcrAAAAAMXdyJPBfmYI36E3A_j-ZJcrt-DA" 
               onChange={(token: string | null) => setCaptchaToken(token)}
             />

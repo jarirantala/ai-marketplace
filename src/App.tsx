@@ -45,7 +45,6 @@ function App() {
             name: item.name || '',
             url: item.url || '',
             description: item.description || '',
-            type: item.type || '',
             useCase: item.useCase || '',
             region: item.region || '',
             imageKey: item.imageKey || '',
@@ -62,7 +61,6 @@ function App() {
     name: "",
     url: "",
     description: "",
-    type: "",
     useCase: "",
     region: "",
     imageKey: "",
@@ -97,7 +95,7 @@ function App() {
     
     // Validate required fields client-side
     if (!formData.name || !formData.url || 
-        !formData.description || !formData.type || !formData.useCase || !formData.region ||
+        !formData.description || !formData.useCase || !formData.region ||
         !formData.addedBy || !formData.addedByEmail) {
       alert("Please fill in all required fields");
       return;
@@ -115,7 +113,6 @@ function App() {
       name: formData.name.trim().slice(0, 40),
       url: validateUrl(formData.url.trim()) ? formData.url.trim() : '',
       description: formData.description.trim().slice(0, 200),
-      type: formData.type,
       useCase: formData.useCase.trim().slice(0, 60),
       region: formData.region,
       imageKey: formData.imageKey ? validateUrl(formData.imageKey.trim()) ? formData.imageKey.trim() : '' : undefined,
@@ -166,7 +163,6 @@ function App() {
       name: "",
       url: "",
       description: "",
-      type: "",
       useCase: "",
       region: "",
       imageKey: "",
@@ -179,10 +175,7 @@ function App() {
   return (
     <main>
       <div className="header">
-        <div className="title-container">
-          <h1>AI Marketplace Finland</h1>
-          <p className="subheader">A collection of Finnish and European AI services</p>
-        </div>
+        <h1>AI Marketplace Finland</h1>
         <button onClick={() => setShowForm(!showForm)}>
           {showForm ? "Cancel" : "+ new"}
         </button>
@@ -197,7 +190,6 @@ function App() {
               value={formData.name} 
               onChange={handleChange} 
               required 
-              maxLength={40}
             />
           </div>
           <div>
@@ -209,7 +201,6 @@ function App() {
               required 
             />
           </div>
-
           <div>
             <label>Description*: </label>
             <textarea 
@@ -217,21 +208,7 @@ function App() {
               value={formData.description} 
               onChange={handleChange}
               required
-              maxLength={200}
             />
-          </div>
-          <div>
-            <label>Type*: </label>
-            <select
-              name="type"
-              value={formData.type}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select type</option>
-              <option value="Business">Business</option>
-              <option value="Consumer">Consumer</option>
-            </select>
           </div>
           <div>
             <label>Use Case*: </label>
@@ -240,7 +217,6 @@ function App() {
               value={formData.useCase} 
               onChange={handleChange}
               required
-              maxLength={60}
               title="Collaboration tool, chatbot etc"
             />
           </div>
@@ -310,8 +286,6 @@ function App() {
             <p>{app?.description || ''}</p>
             <div className="app-details">
               <p><strong>URL:</strong> <a href={app?.url || '#'} target="_blank" rel="noopener noreferrer">{app?.url || ''}</a></p>
-
-              <p><strong>Type:</strong> {app?.type || ''}</p>
               <p><strong>Use Case:</strong> {app?.useCase || ''}</p>
               <p><strong>Region:</strong> {app?.region || ''}</p>
             </div>
@@ -320,7 +294,7 @@ function App() {
       </div>
       
       <footer>
-        © 2025 AI Marketplace Finland. All rights reserved. | <a href="/privacy-policy.html">Tietosuojaseloste</a> | <a href="/privacy-policy-en.html">Privacy Policy</a>
+        © 2025 AI Marketplace Finland. All rights reserved.
       </footer>
     </main>
   );

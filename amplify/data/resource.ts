@@ -12,7 +12,6 @@ const schema = a.schema({
       name: a.string().required(),
       url: a.string().required(),
       description: a.string(),
-      type: a.string(),
       useCase: a.string(),
       region: a.string(),
       imageKey: a.string(),

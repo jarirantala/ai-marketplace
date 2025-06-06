@@ -2,13 +2,11 @@ import { useEffect, useState } from "react";
 import type { Schema } from "../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
 import "./styles.css";
-import ReCAPTCHA from "react-google-recaptcha";
 
 const client = generateClient<Schema>();
 
 function App() {
   const [aiApps, setAiApps] = useState<Array<Schema["AIApp"]["type"]>>([]);
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   
   // Load rate limit data from localStorage on component mount
   useEffect(() => {
@@ -75,12 +73,6 @@ function App() {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     
-    // Verify CAPTCHA
-    if (!captchaToken) {
-      alert("Please complete the CAPTCHA verification");
-      return;
-    }
-    
     // Apply rate limiting
     const now = Date.now();
     // Remove submissions older than the time window
@@ -128,9 +120,6 @@ function App() {
       return;
     }
     
-    // Honeypot check (would need to add a hidden honeypot field to the form)
-    // if (honeypotField.value) return; // Bot detected
-    
     // Add submission timestamp for audit
     const submission = {
       ...sanitizedData,
@@ -147,17 +136,8 @@ function App() {
       // Ignore localStorage errors
     }
     
-    // Include captcha token with submission
-    const submissionWithCaptcha = {
-      ...submission,
-      captchaToken // This could be verified server-side
-    };
+    client.models.AIApp.create(submission);
     
-    client.models.AIApp.create(submissionWithCaptcha);
-    
-    // Reset captcha token
-    setCaptchaToken(null);
-
     setFormData({
       name: "",
       url: "",
@@ -192,6 +172,7 @@ function App() {
               value={formData.name} 
               onChange={handleChange} 
               required 
+              maxLength={40}
             />
           </div>
           <div>
@@ -221,6 +202,7 @@ function App() {
               value={formData.useCase} 
               onChange={handleChange}
               required
+              maxLength={60}
               title="Collaboration tool, chatbot etc"
             />
           </div>
@@ -267,12 +249,6 @@ function App() {
               maxLength={100}
             />
           </div>
-          <div style={{ margin: "20px 0" }}>
-            <ReCAPTCHA
-              sitekey="6Le_clcrAAAAAMXdyJPBfmYI36E3A_j-ZJcrt-DA" 
-              onChange={(token: string | null) => setCaptchaToken(token)}
-            />
-          </div>
           <div className="consent-checkbox" style={{ margin: "20px 0" }}>
             <label>
               <input type="checkbox" required />
@@ -289,7 +265,7 @@ function App() {
             <img 
               src={app.imageKey && app.imageKey.trim() !== '' 
                 ? app.imageKey 
-                : "https://aimarketplacefi.s3.eu-central-1.amazonaws.com/aimarketplace-logo.png"}
+                : "/logo.png"}
               alt={app.imageKey && app.imageKey.trim() !== '' ? `${app.name} Logo` : "AI Marketplace Logo"} 
               className="app-logo" 
             />

@@ -11,7 +11,6 @@ const schema = a.schema({
     .model({
       name: a.string().required(),
       url: a.string().required(),
-      license: a.string(),
       description: a.string(),
       type: a.string(),
       useCase: a.string(),

@@ -44,7 +44,6 @@ function App() {
             ...item,
             name: item.name || '',
             url: item.url || '',
-            license: item.license || '',
             description: item.description || '',
             type: item.type || '',
             useCase: item.useCase || '',
@@ -62,7 +61,6 @@ function App() {
   const [formData, setFormData] = useState({
     name: "",
     url: "",
-    license: "",
     description: "",
     type: "",
     useCase: "",
@@ -98,7 +96,7 @@ function App() {
     }
     
     // Validate required fields client-side
-    if (!formData.name || !formData.url || !formData.license || 
+    if (!formData.name || !formData.url || 
         !formData.description || !formData.type || !formData.useCase || !formData.region ||
         !formData.addedBy || !formData.addedByEmail) {
       alert("Please fill in all required fields");
@@ -114,12 +112,11 @@ function App() {
     
     // Basic input sanitization
     const sanitizedData = {
-      name: formData.name.trim().slice(0, 100),
+      name: formData.name.trim().slice(0, 40),
       url: validateUrl(formData.url.trim()) ? formData.url.trim() : '',
-      license: formData.license.trim().slice(0, 100),
-      description: formData.description.trim().slice(0, 1000),
+      description: formData.description.trim().slice(0, 200),
       type: formData.type,
-      useCase: formData.useCase.trim().slice(0, 200),
+      useCase: formData.useCase.trim().slice(0, 60),
       region: formData.region,
       imageKey: formData.imageKey ? validateUrl(formData.imageKey.trim()) ? formData.imageKey.trim() : '' : undefined,
       addedBy: formData.addedBy.trim().slice(0, 100),
@@ -168,7 +165,6 @@ function App() {
     setFormData({
       name: "",
       url: "",
-      license: "",
       description: "",
       type: "",
       useCase: "",
@@ -201,6 +197,7 @@ function App() {
               value={formData.name} 
               onChange={handleChange} 
               required 
+              maxLength={40}
             />
           </div>
           <div>
@@ -212,15 +209,7 @@ function App() {
               required 
             />
           </div>
-          <div>
-            <label>License*: </label>
-            <input 
-              name="license" 
-              value={formData.license} 
-              onChange={handleChange}
-              required
-            />
-          </div>
+
           <div>
             <label>Description*: </label>
             <textarea 
@@ -228,6 +217,7 @@ function App() {
               value={formData.description} 
               onChange={handleChange}
               required
+              maxLength={200}
             />
           </div>
           <div>
@@ -250,6 +240,7 @@ function App() {
               value={formData.useCase} 
               onChange={handleChange}
               required
+              maxLength={60}
               title="Collaboration tool, chatbot etc"
             />
           </div>
@@ -319,7 +310,7 @@ function App() {
             <p>{app?.description || ''}</p>
             <div className="app-details">
               <p><strong>URL:</strong> <a href={app?.url || '#'} target="_blank" rel="noopener noreferrer">{app?.url || ''}</a></p>
-              <p><strong>License:</strong> {app?.license || ''}</p>
+
               <p><strong>Type:</strong> {app?.type || ''}</p>
               <p><strong>Use Case:</strong> {app?.useCase || ''}</p>
               <p><strong>Region:</strong> {app?.region || ''}</p>

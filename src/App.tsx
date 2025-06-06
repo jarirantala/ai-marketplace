@@ -165,6 +165,7 @@ function App() {
       
       {showForm && (
         <form onSubmit={handleSubmit} style={{ margin: "20px 0" }}>
+          <p style={{ color: "red", marginBottom: "15px" }}>New entries go through a manual approval process before being visible on the site.</p>
           <div>
             <label>Name*: </label>
             <input 
@@ -252,7 +253,7 @@ function App() {
           <div className="consent-checkbox" style={{ margin: "20px 0" }}>
             <label>
               <input type="checkbox" required />
-              I consent to the processing of my email for publishing or contacting purposes, as described in the <a href="/privacy-policy.html" target="_blank">privacy policy</a>.
+              I consent to the processing of my email for publishing or contacting purposes, as described in the privacy policy.
             </label>
           </div>
           <button type="submit">Submit</button>
@@ -265,7 +266,7 @@ function App() {
             <img 
               src={app.imageKey && app.imageKey.trim() !== '' 
                 ? app.imageKey 
-                : "/logo.png"}
+                : "/aimarketplace-logo.png"}
               alt={app.imageKey && app.imageKey.trim() !== '' ? `${app.name} Logo` : "AI Marketplace Logo"} 
               className="app-logo" 
             />

@@ -157,10 +157,16 @@ function App() {
     client.models.AIApp.create(submissionWithCaptcha);
     
     // Reset captcha after submission
+   // Reset captcha after submission
     setCaptchaToken(null);
-    if (recaptchaRef.current) {
-      recaptchaRef.current.reset();
+    try {
+      if (recaptchaRef.current) {
+        recaptchaRef.current.reset();
+      }
+    } catch (error) {
+      console.log("Error resetting reCAPTCHA:", error);
     }
+
     setFormData({
       name: "",
       url: "",

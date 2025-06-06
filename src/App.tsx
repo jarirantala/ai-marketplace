@@ -183,7 +183,10 @@ function App() {
   return (
     <main>
       <div className="header">
-        <h1>AI Marketplace Finland</h1>
+        <div className="title-container">
+          <h1>AI Marketplace Finland</h1>
+          <p className="subheader">A collection of Finnish and European AI services</p>
+        </div>
         <button onClick={() => setShowForm(!showForm)}>
           {showForm ? "Cancel" : "+ new"}
         </button>

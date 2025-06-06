@@ -219,6 +219,13 @@ input, textarea, select {
 }
 
 /* Card Content */
+.app-header {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding-right: 70px;
+}
+
 .app-item h3 {
   margin: 0 0 8px;
   color: #2563eb; /* blue-600 */
@@ -226,6 +233,13 @@ input, textarea, select {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.app-description {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+  line-height: 1.4;
 }
 
 .flag-icon {
@@ -258,6 +272,7 @@ input, textarea, select {
   width: 60px;
   height: 60px;
   object-fit: contain;
+  z-index: 1;
 }
 
 .app-image {

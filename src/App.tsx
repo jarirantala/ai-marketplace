@@ -56,13 +56,22 @@ function App() {
     });
   }, []);
   
-  // Filter apps when selected use case changes
+  // Filter apps when selected use case changes and sort by region (Finland first)
   useEffect(() => {
-    if (selectedUseCase === "") {
-      setFilteredApps(aiApps);
-    } else {
-      setFilteredApps(aiApps.filter(app => app.useCase === selectedUseCase));
-    }
+    let filtered = selectedUseCase === "" 
+      ? [...aiApps] 
+      : aiApps.filter(app => 
+          app.useCase && app.useCase.toLowerCase().includes(selectedUseCase.toLowerCase())
+        );
+    
+    // Sort by region: Finland first, then Europe
+    filtered.sort((a, b) => {
+      if (a.region === "Finland" && b.region !== "Finland") return -1;
+      if (a.region !== "Finland" && b.region === "Finland") return 1;
+      return 0;
+    });
+    
+    setFilteredApps(filtered);
   }, [selectedUseCase, aiApps]);
 
   const [showForm, setShowForm] = useState(false);
@@ -301,18 +310,19 @@ function App() {
               alt={app.imageKey && app.imageKey.trim() !== '' ? `${app.name} Logo` : "AI Marketplace Logo"} 
               className="app-logo" 
             />
-            <h3>
-              {app?.name || ''}
-              {app?.region === 'Finland' && (
-                <img 
-                  src="/finnishflag.png" 
-                  alt="Finnish flag" 
-                  className="flag-icon" 
-                />
-              )}
-            </h3>
-
-            <p>{app?.description || ''}</p>
+            <div className="app-header">
+              <h3>
+                {app?.name || ''}
+                {app?.region === 'Finland' && (
+                  <img 
+                    src="/finnishflag.png" 
+                    alt="Finnish flag" 
+                    className="flag-icon" 
+                  />
+                )}
+              </h3>
+              <p className="app-description">{app?.description || ''}</p>
+            </div>
             <div className="app-details">
               <p><strong>URL:</strong> <a href={app?.url || '#'} target="_blank" rel="noopener noreferrer">{app?.url || ''}</a></p>
               <p><strong>Use Case:</strong> {app?.useCase || ''}</p>

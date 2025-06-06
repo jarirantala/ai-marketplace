@@ -91,12 +91,21 @@ form div {
 .consent-checkbox {
   display: flex;
   align-items: flex-start;
+  width: 100%;
+}
+
+.consent-checkbox label {
+  display: flex;
+  width: 100%;
+  margin-right: 0;
 }
 
 .consent-checkbox input[type="checkbox"] {
   width: auto;
+  min-width: auto;
   margin-right: 10px;
   margin-top: 4px;
+  flex-shrink: 0;
 }
 
 label {
@@ -167,6 +176,16 @@ input, textarea, select {
   margin: 0 0 8px;
   color: #2563eb; /* blue-600 */
   font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.flag-icon {
+  width: 20px;
+  height: auto;
+  vertical-align: middle;
+  margin-left: 5px;
 }
 
 .app-details {

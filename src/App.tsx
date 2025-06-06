@@ -111,11 +111,13 @@ function App() {
     // Basic input sanitization
     const sanitizedData = {
       name: formData.name.trim().slice(0, 40),
-      url: validateUrl(formData.url.trim()) ? formData.url.trim() : '',
+      url: validateUrl(formData.url.trim()) ? 
+        (/^https?:\/\//i.test(formData.url.trim()) ? formData.url.trim() : 'https://' + formData.url.trim()) : '',
       description: formData.description.trim().slice(0, 200),
       useCase: formData.useCase.trim().slice(0, 60),
       region: formData.region,
-      imageKey: formData.imageKey ? validateUrl(formData.imageKey.trim()) ? formData.imageKey.trim() : '' : undefined,
+      imageKey: formData.imageKey ? validateUrl(formData.imageKey.trim()) ? 
+        (/^https?:\/\//i.test(formData.imageKey.trim()) ? formData.imageKey.trim() : 'https://' + formData.imageKey.trim()) : '' : undefined,
       addedBy: formData.addedBy.trim().slice(0, 100),
       addedByEmail: formData.addedByEmail.trim().slice(0, 100),
       active: false // Explicitly set to false for new items - requires admin approval
@@ -287,7 +289,16 @@ function App() {
               alt={app.imageKey && app.imageKey.trim() !== '' ? `${app.name} Logo` : "AI Marketplace Logo"} 
               className="app-logo" 
             />
-            <h3>{app?.name || ''}</h3>
+            <h3>
+              {app?.name || ''}
+              {app?.region === 'Finland' && (
+                <img 
+                  src="/finnishflag.png" 
+                  alt="Finnish flag" 
+                  className="flag-icon" 
+                />
+              )}
+            </h3>
 
             <p>{app?.description || ''}</p>
             <div className="app-details">
@@ -309,6 +320,11 @@ function App() {
 export default App;
 // Function to validate URL format
 function validateUrl(url: string): boolean {
+  // Add protocol if missing
+  if (!/^https?:\/\//i.test(url)) {
+    url = 'https://' + url;
+  }
+  
   try {
     const parsedUrl = new URL(url);
     return parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:';

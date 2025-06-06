@@ -324,6 +324,10 @@ function App() {
           </div>
         ))}
       </div>
+      
+      <footer>
+        © 2025 AI Marketplace. All rights reserved.
+      </footer>
     </main>
   );
 }

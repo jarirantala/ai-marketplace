@@ -186,9 +186,12 @@ function App() {
             }
           </select>
         </div>
-        <button onClick={() => setShowForm(!showForm)}>
-          {showForm ? "Cancel" : "+ new"}
-        </button>
+        <div className="add-new-container">
+          <span className="add-label">Add your own</span>
+          <button onClick={() => setShowForm(!showForm)}>
+            {showForm ? "Cancel" : "+ new"}
+          </button>
+        </div>
       </div>
       
       {showForm && (

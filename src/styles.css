@@ -36,6 +36,17 @@ main {
   margin: 0 15px;
 }
 
+.add-new-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.add-label {
+  color: red;
+  font-weight: 500;
+}
+
 .use-case-filter {
   padding: 8px 12px;
   border: 1px solid #e5e7eb;
@@ -95,6 +106,11 @@ button {
   
   .use-case-filter {
     width: 100%;
+  }
+  
+  .add-new-container {
+    width: 100%;
+    justify-content: space-between;
   }
 }
 

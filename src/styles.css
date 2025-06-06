@@ -25,6 +25,24 @@ main {
   align-items: center;
   margin-bottom: 1.5rem;
   width: 100%;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.filter-container {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  margin: 0 15px;
+}
+
+.use-case-filter {
+  padding: 8px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background-color: white;
+  min-width: 200px;
+  font-size: 0.95rem;
 }
 
 .title-container {
@@ -62,11 +80,21 @@ button {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 10px;
+    gap: 15px;
+  }
+  
+  .filter-container {
+    width: 100%;
+    margin: 0;
+    justify-content: flex-start;
+  }
+  
+  .use-case-filter {
+    width: 100%;
   }
 }
 

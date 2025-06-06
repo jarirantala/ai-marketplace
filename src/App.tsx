@@ -7,6 +7,8 @@ const client = generateClient<Schema>();
 
 function App() {
   const [aiApps, setAiApps] = useState<Array<Schema["AIApp"]["type"]>>([]);
+  const [filteredApps, setFilteredApps] = useState<Array<Schema["AIApp"]["type"]>>([]);
+  const [selectedUseCase, setSelectedUseCase] = useState<string>("");
   
   // Load rate limit data from localStorage on component mount
   useEffect(() => {
@@ -49,9 +51,19 @@ function App() {
             addedByEmail: item.addedByEmail || ''
           }));
         setAiApps(normalizedItems);
+        setFilteredApps(normalizedItems);
       },
     });
   }, []);
+  
+  // Filter apps when selected use case changes
+  useEffect(() => {
+    if (selectedUseCase === "") {
+      setFilteredApps(aiApps);
+    } else {
+      setFilteredApps(aiApps.filter(app => app.useCase === selectedUseCase));
+    }
+  }, [selectedUseCase, aiApps]);
 
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
@@ -158,6 +170,22 @@ function App() {
           <h1>AI Marketplace Finland</h1>
           <p className="subheader">A collection of Finnish and European AI services</p>
         </div>
+        <div className="filter-container">
+          <select 
+            value={selectedUseCase} 
+            onChange={(e) => setSelectedUseCase(e.target.value)}
+            className="use-case-filter"
+          >
+            <option value="">All Use Cases</option>
+            {Array.from(new Set(aiApps.map(app => app.useCase)))
+              .filter(useCase => useCase)
+              .sort()
+              .map(useCase => (
+                <option key={useCase} value={useCase}>{useCase}</option>
+              ))
+            }
+          </select>
+        </div>
         <button onClick={() => setShowForm(!showForm)}>
           {showForm ? "Cancel" : "+ new"}
         </button>
@@ -261,7 +289,7 @@ function App() {
       )}
       
       <div className="app-list">
-        {aiApps.map((app) => (
+        {filteredApps.map((app) => (
           <div key={app.id} className="app-item">
             <img 
               src={app.imageKey && app.imageKey.trim() !== '' 

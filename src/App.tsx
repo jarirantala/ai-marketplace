@@ -326,7 +326,7 @@ function App() {
       </div>
       
       <footer>
-        © 2025 AI Marketplace. All rights reserved. | <a href="/privacy-policy.html">Tietosuojaseloste</a>
+        © 2025 AI Marketplace Finland. All rights reserved. | <a href="/privacy-policy.html">Tietosuojaseloste</a> | <a href="/privacy-policy-en.html">Privacy Policy</a>
       </footer>
     </main>
   );

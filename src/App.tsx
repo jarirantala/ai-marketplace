@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import type { Schema } from "../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
 import "./styles.css";
@@ -9,7 +9,6 @@ const client = generateClient<Schema>();
 function App() {
   const [aiApps, setAiApps] = useState<Array<Schema["AIApp"]["type"]>>([]);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
-  const recaptchaRef = useRef<ReCAPTCHA>(null);
   
   // Load rate limit data from localStorage on component mount
   useEffect(() => {

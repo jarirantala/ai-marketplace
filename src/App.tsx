@@ -293,7 +293,7 @@ function App() {
           <div style={{ margin: "20px 0" }}>
             <ReCAPTCHA
               ref={recaptchaRef}
-              sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" // Replace with your actual site key
+              sitekey="6Le_clcrAAAAAMXdyJPBfmYI36E3A_j-ZJcrt-DA" 
               onChange={(token: string | null) => setCaptchaToken(token)}
             />
           </div>

@@ -177,7 +177,7 @@ function App() {
             className="use-case-filter"
           >
             <option value="">All Use Cases</option>
-            {Array.from(new Set(aiApps.map(app => app.useCase)))
+            {Array.from(new Set(aiApps.map(app => app.useCase || '')))
               .filter(useCase => useCase)
               .sort()
               .map(useCase => (

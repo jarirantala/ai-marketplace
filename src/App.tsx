@@ -177,7 +177,10 @@ function App() {
   return (
     <main>
       <div className="header">
-        <h1>AI Marketplace Finland</h1>
+        <div className="title-container">
+          <h1>AI Marketplace Finland</h1>
+          <p className="subheader">A collection of Finnish and European AI services</p>
+        </div>
         <button onClick={() => setShowForm(!showForm)}>
           {showForm ? "Cancel" : "+ new"}
         </button>
@@ -201,6 +204,7 @@ function App() {
               value={formData.url} 
               onChange={handleChange} 
               required 
+              maxLength={200}
             />
           </div>
           <div>
@@ -210,6 +214,7 @@ function App() {
               value={formData.description} 
               onChange={handleChange}
               required
+              maxLength={200}
             />
           </div>
           <div>
@@ -241,6 +246,7 @@ function App() {
               name="imageKey" 
               value={formData.imageKey} 
               onChange={handleChange} 
+              maxLength={200}
             />
           </div>
           <div>
@@ -250,6 +256,7 @@ function App() {
               value={formData.addedBy} 
               onChange={handleChange}
               required
+              maxLength={100}
             />
           </div>
           <div>
@@ -260,6 +267,7 @@ function App() {
               value={formData.addedByEmail} 
               onChange={handleChange}
               required
+              maxLength={100}
             />
           </div>
           <div style={{ margin: "20px 0" }}>

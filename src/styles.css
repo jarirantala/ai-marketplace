@@ -88,6 +88,17 @@ form div {
   align-items: center;
 }
 
+.consent-checkbox {
+  display: flex;
+  align-items: flex-start;
+}
+
+.consent-checkbox input[type="checkbox"] {
+  width: auto;
+  margin-right: 10px;
+  margin-top: 4px;
+}
+
 label {
   width: 100px;
   margin-right: 10px;

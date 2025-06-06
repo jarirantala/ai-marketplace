@@ -267,6 +267,12 @@ function App() {
               onChange={(token: string | null) => setCaptchaToken(token)}
             />
           </div>
+          <div className="consent-checkbox" style={{ margin: "20px 0" }}>
+            <label>
+              <input type="checkbox" required />
+              I consent to the processing of my email for publishing or contacting purposes, as described in the <a href="/privacy-policy.html" target="_blank">privacy policy</a>.
+            </label>
+          </div>
           <button type="submit">Submit</button>
         </form>
       )}
@@ -294,7 +300,7 @@ function App() {
       </div>
       
       <footer>
-        © 2025 AI Marketplace Finland. All rights reserved.
+        © 2025 AI Marketplace Finland. All rights reserved. | <a href="/privacy-policy.html">Tietosuojaseloste</a> | <a href="/privacy-policy-en.html">Privacy Policy</a>
       </footer>
     </main>
   );

@@ -182,7 +182,7 @@ input, textarea, select {
 .app-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 10px;
   margin-top: 20px;
   align-items: stretch;
   width: 100%;
@@ -194,8 +194,8 @@ input, textarea, select {
   border: 1px solid #e5e7eb;
   border-radius: 10px;
   padding: 16px;
-  width: 32%;
-  flex: 0 0 32%;
+  width: calc(33.33% - 7px);
+  flex: 0 0 calc(33.33% - 7px);
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
   position: relative;
   transition: box-shadow 0.2s ease;

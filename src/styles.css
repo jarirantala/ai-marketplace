@@ -186,7 +186,6 @@ input, textarea, select {
   margin-top: 20px;
   align-items: stretch;
   width: 100%;
-  justify-content: space-between;
 }
 
 /* App Card */
@@ -196,7 +195,7 @@ input, textarea, select {
   border-radius: 10px;
   padding: 16px;
   width: calc(33.33% - 8px);
-  min-width: 300px;
+  min-width: 32%;
   max-width: calc(33.33% - 8px);
   flex: 0 0 calc(33.33% - 8px);
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);

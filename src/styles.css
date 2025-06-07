@@ -209,7 +209,7 @@ input, textarea, select {
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .app-item {
     width: 100%;
     max-width: 100%;

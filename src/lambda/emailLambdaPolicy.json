@@ -1,0 +1,20 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:DescribeStream",
+        "dynamodb:ListStreams"
+      ],
+      "Resource": "arn:aws:dynamodb:eu-central-1:552560325226:table/AIApp-wlux3dyw5jdenhfh5l3w5jybsm-NONE/stream/*"
+    },
+    {
+        "Effect": "Allow",
+        "Action": "ses:SendEmail",
+        "Resource": "arn:aws:ses:eu-central-1:552560325226:identity/info@ai-marketplace.fi"
+    }
+  ]
+}

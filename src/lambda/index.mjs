@@ -1,15 +1,18 @@
 import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
 
-const ses = new SESClient({ region: 'eu-central-1' });
+const ses = new SESClient({ 
+  region: 'eu-central-1',
+  // Explicitly set configuration options to avoid inheriting any defaults
+  apiVersion: '2010-12-01'
+});
+
 const emailTo = 'info@ai-marketplace.fi';
 
 const welcomeText = `Uusi AI palvelu lisätty`;
 
 export const handler = async (event) => {
-  console.log('käsitellään eventtiä');
   return await Promise.all(
     event.Records.map(async (record) => {
-      console.log('käsitellään recordia');
       if (record.eventName !== 'INSERT') {
         return;
       }
@@ -19,7 +22,6 @@ export const handler = async (event) => {
       if (!record.dynamodb.NewImage) {
         return;
       }
-      console.log('record käsitelty');
       const params = {
         Destination: {
           ToAddresses: [emailTo]
@@ -36,9 +38,8 @@ export const handler = async (event) => {
           }
         },
         Source: 'AI Marketplace Finland <info@ai-marketplace.fi>'
-        // No ConfigurationSetName property
       };
-      console.log('meilataan');
+
       const command = new SendEmailCommand(params);
       return await ses.send(command);
     })

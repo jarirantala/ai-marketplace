@@ -190,17 +190,26 @@ function App() {
             className="use-case-filter"
           >
             <option value="">All Use Cases</option>
-            {Array.from(new Set(
+            {Array.from(
+              // Create a case-insensitive map of lowercase -> display case
               aiApps.flatMap(app => 
                 app.useCase ? 
                   app.useCase.split(',').map(uc => uc.trim()) : 
                   []
               )
-            ))
               .filter(useCase => useCase)
-              .sort()
-              .map(useCase => (
-                <option key={useCase} value={useCase}>{useCase}</option>
+              .reduce((map, useCase) => {
+                const lowerCase = useCase.toLowerCase();
+                // Keep the first occurrence or the capitalized version if it exists
+                if (!map.has(lowerCase) || useCase.charAt(0) === useCase.charAt(0).toUpperCase()) {
+                  map.set(lowerCase, useCase);
+                }
+                return map;
+              }, new Map())
+            )
+              .sort((a, b) => a[1].localeCompare(b[1]))
+              .map(([key, displayValue]) => (
+                <option key={key} value={displayValue}>{displayValue}</option>
               ))
             }
           </select>

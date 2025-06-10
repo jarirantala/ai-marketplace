@@ -60,9 +60,13 @@ function App() {
   useEffect(() => {
     let filtered = selectedUseCase === "" 
       ? [...aiApps] 
-      : aiApps.filter(app => 
-          app.useCase && app.useCase.toLowerCase().includes(selectedUseCase.toLowerCase())
-        );
+      : aiApps.filter(app => {
+          if (!app.useCase) return false;
+          
+          // Split usecases by comma and check if any match the selected usecase
+          const useCases = app.useCase.split(',').map(uc => uc.trim().toLowerCase());
+          return useCases.includes(selectedUseCase.toLowerCase());
+        });
     
     // Sort by region: Finland first, then Europe
     filtered.sort((a, b) => {
@@ -186,7 +190,13 @@ function App() {
             className="use-case-filter"
           >
             <option value="">All Use Cases</option>
-            {Array.from(new Set(aiApps.map(app => app.useCase || '')))
+            {Array.from(new Set(
+              aiApps.flatMap(app => 
+                app.useCase ? 
+                  app.useCase.split(',').map(uc => uc.trim()) : 
+                  []
+              )
+            ))
               .filter(useCase => useCase)
               .sort()
               .map(useCase => (

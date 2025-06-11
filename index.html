@@ -5,7 +5,8 @@
     <link rel="icon" href="/aimarketplace-logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AI Marketplace Finland</title>
-    <!-- Cookie Consent -->
+
+    <!-- Cookie Consent Styles -->
     <style>
       #cookie-consent {
         position: fixed;
@@ -36,51 +37,50 @@
         margin-left: 5px;
       }
     </style>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LJS8NRTEEX"></script>
+
+    <!-- Consent Mode Initialization and Dynamic gtag.js Injection -->
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      
-      // Configure Google tag first to ensure it's detected
-      gtag('config', 'G-LJS8NRTEEX');
-      
-      // Set default consent to 'denied' with Consent Mode v2
-      gtag('consent', 'default', {
-        'ad_storage': 'denied',
-        'analytics_storage': 'denied',
-        'functionality_storage': 'denied',
-        'personalization_storage': 'denied',
-        'security_storage': 'granted',
-        'ad_user_data': 'denied',
-        'ad_personalization': 'denied',
-        'wait_for_update': 500
-      });
-      
-      // For EU region
-      gtag('set', 'ads_data_redaction', true);
-      gtag('set', 'url_passthrough', true);
-      
-      // Check if consent was previously given
-      if (localStorage.getItem('cookieConsent') === 'accepted') {
-        gtag('consent', 'update', {
-          'ad_storage': 'granted',
-          'analytics_storage': 'granted',
-          'functionality_storage': 'granted',
-          'personalization_storage': 'granted',
-          'security_storage': 'granted',
-          'ad_user_data': 'granted',
-          'ad_personalization': 'granted'
+      (function() {
+        // 1. Read prior choice from a first-party cookie ("accepted" / "declined" or empty)
+        function readConsent() {
+          return document.cookie.replace(/(?:(?:^|.*;\s*)cookie_consent\s*=\s*([^;]*).*$)|^.*$/, '$1');
+        }
+        var choice = readConsent();
+
+        // 2. Prepare dataLayer and gtag() stub
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){ dataLayer.push(arguments); }
+
+        // 3. Declare default consent before loading gtag.js
+        gtag('consent','default',{
+          'analytics_storage': choice === 'accepted' ? 'granted' : 'denied',
+          'ad_storage':        choice === 'accepted' ? 'granted' : 'denied',
+          'ad_user_data':      choice === 'accepted' ? 'granted' : 'denied',
+          'ad_personalization':choice === 'accepted' ? 'granted' : 'denied'
         });
-      }
+
+        // 4. Inject gtag.js dynamically
+        var s = document.createElement('script');
+        s.async = true;
+        s.src   = 'https://www.googletagmanager.com/gtag/js?id=G-LJS8NRTEEX';
+        document.head.appendChild(s);
+
+        // 5. Configure GA once gtag.js has loaded
+        s.onload = function() {
+          gtag('js', new Date());
+          gtag('config', 'G-LJS8NRTEEX', { debug_mode: true });
+        };
+      })();
     </script>
   </head>
+
   <body>
     <div id="root"></div>
+
+    <!-- Cookie Consent Banner -->
     <div id="cookie-consent" style="display: none;">
       <div>
-        This website uses cookies to improve your experience. 
+        This website uses cookies to improve your experience.
         <a href="/privacy-policy-en.html">Learn more</a>
       </div>
       <div>
@@ -88,39 +88,42 @@
         <button id="cookie-decline">Decline</button>
       </div>
     </div>
+
+    <!-- Main App Script -->
     <script type="module" src="/src/main.tsx"></script>
+
+    <!-- Cookie Consent Logic -->
     <script>
-      // Cookie consent logic
       document.addEventListener('DOMContentLoaded', function() {
-        const consent = localStorage.getItem('cookieConsent');
-        const banner = document.getElementById('cookie-consent');
-        
-        // Always show banner during debugging if needed
-        // const forceShowBanner = new URLSearchParams(window.location.search).has('debug_consent');
-        
+        var banner = document.getElementById('cookie-consent');
+        var consent = document.cookie.replace(/(?:(?:^|.*;\s*)cookie_consent\s*=\s*([^;]*).*$)|^.*$/, '$1');
+
+        // Show banner if no prior decision
         if (!consent) {
           banner.style.display = 'flex';
         }
-        
+
         document.getElementById('cookie-accept').addEventListener('click', function() {
-          localStorage.setItem('cookieConsent', 'accepted');
+          // Store consent in a cookie for 1 year
+          document.cookie = 'cookie_consent=accepted; path=/; Secure; SameSite=Lax; max-age=' + 60*60*24*365;
           banner.style.display = 'none';
-          
-          // Update consent state after user accepts with Consent Mode v2
-          gtag('consent', 'update', {
-            'ad_storage': 'granted',
-            'analytics_storage': 'granted',
-            'functionality_storage': 'granted',
-            'personalization_storage': 'granted',
-            'security_storage': 'granted',
-            'ad_user_data': 'granted',
-            'ad_personalization': 'granted'
+          gtag('consent','update',{
+            'analytics_storage':'granted',
+            'ad_storage':'granted',
+            'ad_user_data':'granted',
+            'ad_personalization':'granted'
           });
         });
-        
+
         document.getElementById('cookie-decline').addEventListener('click', function() {
-          localStorage.setItem('cookieConsent', 'declined');
+          document.cookie = 'cookie_consent=declined; path=/; Secure; SameSite=Lax; max-age=' + 60*60*24*365;
           banner.style.display = 'none';
+          gtag('consent','update',{
+            'analytics_storage':'denied',
+            'ad_storage':'denied',
+            'ad_user_data':'denied',
+            'ad_personalization':'denied'
+          });
         });
       });
     </script>

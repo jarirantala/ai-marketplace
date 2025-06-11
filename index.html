@@ -39,13 +39,23 @@
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-LJS8NRTEEX"></script>
     <script>
-      // Check if consent is given before initializing Google Analytics
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      
+      // Set default consent to 'denied'
+      gtag('consent', 'default', {
+        'analytics_storage': 'denied'
+      });
+      
+      // Check if consent was previously given
       if (localStorage.getItem('cookieConsent') === 'accepted') {
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-LJS8NRTEEX');
+        gtag('consent', 'update', {
+          'analytics_storage': 'granted'
+        });
       }
+      
+      gtag('config', 'G-LJS8NRTEEX');
     </script>
   </head>
   <body>
@@ -75,11 +85,10 @@
           localStorage.setItem('cookieConsent', 'accepted');
           banner.style.display = 'none';
           
-          // Initialize Google Analytics after consent
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-LJS8NRTEEX');
+          // Update consent state after user accepts
+          gtag('consent', 'update', {
+            'analytics_storage': 'granted'
+          });
         });
         
         document.getElementById('cookie-decline').addEventListener('click', function() {

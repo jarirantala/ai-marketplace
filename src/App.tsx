@@ -215,7 +215,7 @@ function App() {
           </select>
         </div>
         <div className="add-new-container">
-          <span className="add-label">Add your own</span>
+          <span className="add-label">Add a new one</span>
           <button onClick={() => setShowForm(!showForm)}>
             {showForm ? "Cancel" : "+ new"}
           </button>

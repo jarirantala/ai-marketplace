@@ -43,6 +43,9 @@
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       
+      // Configure Google tag first to ensure it's detected
+      gtag('config', 'G-LJS8NRTEEX');
+      
       // Set default consent to 'denied' with Consent Mode v2
       gtag('consent', 'default', {
         'ad_storage': 'denied',
@@ -71,8 +74,6 @@
           'ad_personalization': 'granted'
         });
       }
-      
-      gtag('config', 'G-LJS8NRTEEX');
     </script>
   </head>
   <body>
@@ -93,6 +94,9 @@
       document.addEventListener('DOMContentLoaded', function() {
         const consent = localStorage.getItem('cookieConsent');
         const banner = document.getElementById('cookie-consent');
+        
+        // Always show banner during debugging if needed
+        // const forceShowBanner = new URLSearchParams(window.location.search).has('debug_consent');
         
         if (!consent) {
           banner.style.display = 'flex';

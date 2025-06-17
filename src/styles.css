@@ -195,13 +195,38 @@ input, textarea, select {
   padding: 16px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
   position: relative;
-  transition: box-shadow 0.2s ease;
+  transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
+  z-index: 1;
+}
+
+.app-list {
+  position: relative;
+}
+
+.app-list::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0);
+  pointer-events: none;
+  z-index: 0;
+  transition: background-color 0.3s ease;
+}
+
+.app-list:has(.app-item:hover)::before {
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: 0;
 }
 
 .app-item:hover {
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transform: scale(1.03);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 2;
 }
 
 @media (max-width: 768px) {

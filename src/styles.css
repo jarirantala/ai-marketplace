@@ -51,9 +51,10 @@ main {
   padding: 8px 12px;
   border: 1px solid #e5e7eb;
   border-radius: 6px;
-  background-color: white;
+  background-color: transparent;
   min-width: 200px;
   font-size: 0.95rem;
+  color: #111;
 }
 
 .title-container {

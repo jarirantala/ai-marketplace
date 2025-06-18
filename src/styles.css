@@ -49,12 +49,15 @@ main {
 
 .use-case-filter {
   padding: 8px 12px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #2563eb;
   border-radius: 6px;
-  background-color: transparent;
+  background-color: white;
   min-width: 200px;
   font-size: 0.95rem;
   color: #111;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  cursor: pointer;
+  z-index: 2;
 }
 
 .title-container {

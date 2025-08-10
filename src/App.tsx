@@ -1,15 +1,30 @@
 import { useEffect, useState } from "react";
-import type { Schema } from "../amplify/data/resource";
-import { generateClient } from "aws-amplify/data";
 import "./styles.css";
 
-const client = generateClient<Schema>();
+// Define AIApp type (match your backend schema)
+type AIApp = {
+  id: string;
+  name: string;
+  url: string;
+  description: string;
+  useCase: string;
+  region: string;
+  imageKey?: string;
+  addedBy: string;
+  addedByEmail: string;
+  active: boolean;
+  submittedAt?: string;
+  approvedAt?: string;
+  approvedBy?: string;
+};
+
+const API_URL = "https://vvd7vbp3y9.execute-api.eu-central-1.amazonaws.com/default/items";
 
 function App() {
-  const [aiApps, setAiApps] = useState<Array<Schema["AIApp"]["type"]>>([]);
-  const [filteredApps, setFilteredApps] = useState<Array<Schema["AIApp"]["type"]>>([]);
+  const [aiApps, setAiApps] = useState<AIApp[]>([]);
+  const [filteredApps, setFilteredApps] = useState<AIApp[]>([]);
   const [selectedUseCase, setSelectedUseCase] = useState<string>("");
-  
+
   // Load rate limit data from localStorage on component mount
   useEffect(() => {
     try {
@@ -17,29 +32,22 @@ function App() {
       if (storedRateLimit) {
         const parsedData = JSON.parse(storedRateLimit);
         if (Array.isArray(parsedData)) {
-          // Filter out expired timestamps
           const now = Date.now();
           RATE_LIMIT.submissions = parsedData.filter(time => now - time < RATE_LIMIT.timeWindow);
         }
       }
-    } catch (e) {
-      // Ignore localStorage errors
-    }
+    } catch (e) {}
   }, []);
 
+  // Fetch AIApps from your backend API
   useEffect(() => {
-    client.models.AIApp.observeQuery({
-      filter: {
-        active: {
-          eq: true
-        }
-      }
-    }).subscribe({
-      next: (data) => {
-        // Normalize data to ensure no null/undefined values
-        const normalizedItems = data.items
-          .filter(item => item !== null && item !== undefined)
-          .map(item => ({
+    fetch(API_URL)
+      .then(res => res.json())
+      .then(data => {
+        // Only show active apps
+        const normalizedItems = data
+          .filter((item: AIApp) => item && item.active)
+          .map((item: AIApp) => ({
             ...item,
             name: item.name || '',
             url: item.url || '',
@@ -52,29 +60,22 @@ function App() {
           }));
         setAiApps(normalizedItems);
         setFilteredApps(normalizedItems);
-      },
-    });
+      });
   }, []);
-  
-  // Filter apps when selected use case changes and sort by region (Finland first)
+
   useEffect(() => {
     let filtered = selectedUseCase === "" 
       ? [...aiApps] 
       : aiApps.filter(app => {
           if (!app.useCase) return false;
-          
-          // Split usecases by comma and check if any match the selected usecase
           const useCases = app.useCase.split(',').map(uc => uc.trim().toLowerCase());
           return useCases.includes(selectedUseCase.toLowerCase());
         });
-    
-    // Sort by region: Finland first, then Europe
     filtered.sort((a, b) => {
       if (a.region === "Finland" && b.region !== "Finland") return -1;
       if (a.region !== "Finland" && b.region === "Finland") return 1;
       return 0;
     });
-    
     setFilteredApps(filtered);
   }, [selectedUseCase, aiApps]);
 
@@ -97,34 +98,28 @@ function App() {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    
-    // Apply rate limiting
+
     const now = Date.now();
-    // Remove submissions older than the time window
     RATE_LIMIT.submissions = RATE_LIMIT.submissions.filter(time => now - time < RATE_LIMIT.timeWindow);
-    
-    // Check if user has exceeded the rate limit
+
     if (RATE_LIMIT.submissions.length >= RATE_LIMIT.maxSubmissions) {
       alert(`Rate limit exceeded. Please try again later. Maximum ${RATE_LIMIT.maxSubmissions} submissions per hour.`);
       return;
     }
-    
-    // Validate required fields client-side
+
     if (!formData.name || !formData.url || 
         !formData.description || !formData.useCase || !formData.region ||
         !formData.addedBy || !formData.addedByEmail) {
       alert("Please fill in all required fields");
       return;
     }
-    
-    // Basic email validation
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.addedByEmail)) {
       alert("Please enter a valid email address");
       return;
     }
-    
-    // Basic input sanitization
+
     const sanitizedData = {
       name: formData.name.trim().slice(0, 40),
       url: validateUrl(formData.url.trim()) ? 
@@ -136,33 +131,35 @@ function App() {
         (/^https?:\/\//i.test(formData.imageKey.trim()) ? formData.imageKey.trim() : 'https://' + formData.imageKey.trim()) : '' : undefined,
       addedBy: formData.addedBy.trim().slice(0, 100),
       addedByEmail: formData.addedByEmail.trim().slice(0, 100),
-      active: false // Explicitly set to false for new items - requires admin approval
+      active: false
     };
-    
-    // Validate URL format
+
     if (!sanitizedData.url) {
       alert("Please enter a valid URL");
       return;
     }
-    
-    // Add submission timestamp for audit
+
     const submission = {
       ...sanitizedData,
       submittedAt: new Date().toISOString()
     };
-    
-    // Record this submission for rate limiting
+
     RATE_LIMIT.submissions.push(now);
-    
-    // Store rate limit info in localStorage to persist between page refreshes
     try {
       localStorage.setItem('aiMarketplaceRateLimit', JSON.stringify(RATE_LIMIT.submissions));
-    } catch (e) {
-      // Ignore localStorage errors
-    }
-    
-    client.models.AIApp.create(submission);
-    
+    } catch (e) {}
+
+    // POST to your backend API
+    fetch("https://vvd7vbp3y9.execute-api.eu-central-1.amazonaws.com/default/items", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(submission)
+    })
+      .then(res => res.json())
+      .then(() => {
+        // Optionally, refresh the list or show a message
+      });
+
     setFormData({
       name: "",
       url: "",
@@ -359,13 +356,11 @@ function App() {
 }
 
 export default App;
-// Function to validate URL format
+
 function validateUrl(url: string): boolean {
-  // Add protocol if missing
   if (!/^https?:\/\//i.test(url)) {
     url = 'https://' + url;
   }
-  
   try {
     const parsedUrl = new URL(url);
     return parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:';
@@ -373,9 +368,9 @@ function validateUrl(url: string): boolean {
     return false;
   }
 }
-// Simple rate limiting implementation
+
 const RATE_LIMIT = {
   maxSubmissions: 10,
-  timeWindow: 60 * 60 * 1000, // 1 hour in milliseconds
+  timeWindow: 60 * 60 * 1000,
   submissions: [] as number[]
 };
